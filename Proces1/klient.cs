@@ -17,6 +17,10 @@ class klient
 
         // Read the bytes from the file
         byte[] imageBytes = File.ReadAllBytes(filePath);
+        int maxImageSize = 100000000;
+        if (imageBytes.Length > maxImageSize) {
+            Console.WriteLine("Image size is greater than 100MB");
+        }
         string base64String = Convert.ToBase64String(imageBytes);
         try
         {

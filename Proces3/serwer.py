@@ -1,6 +1,7 @@
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 import base64
+from PIL import Image
 # Restrict to a particular path.
 class RequestHandler(SimpleXMLRPCRequestHandler):
     rpc_paths = ('/RPC2',)
@@ -18,6 +19,8 @@ def handleImage(image):
     image_path = "decoded_image.jpg"
     with open(image_path, "wb") as image_file:
         image_file.write(image_data)
+    im = Image.open(r"decoded_image.jpg")
+    im.save(r"decoded_image.png")
     return "image"
 # Register the function with a different name
 server.register_function(add, 'add_numbers')
