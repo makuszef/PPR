@@ -1,7 +1,0 @@
-Exception occurred at: 2024-04-21 13:28:28
-Exception message: This is an example exception message.
-Stack trace:
-Traceback (most recent call last):
-  File "/home/kali/Documents/PPR-Projekt/Proces3/serwer.py", line 22, in <module>
-    raise Exception("This is an example exception message.")
-Exception: This is an example exception message.

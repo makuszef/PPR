@@ -8,7 +8,7 @@ class klient
 {
     public static void Main(string[] args)
     {
-        int maxImageSize = 100000000;
+        int maxImageSize = 1024^3;
         //czytaj plik
         if(args.Length == 0) {
             Console.WriteLine("No command-line arguments provided.");
@@ -21,6 +21,8 @@ class klient
 
         Stream inputStream = Console.OpenStandardInput();
         int readBytes = inputStream.Read(ImageBytes, 0, maxImageSize);
+        byte[] copiedBytes = new byte[readBytes];
+        Array.Copy(ImageBytes, 0, copiedBytes, 0, readBytes);
         Console.WriteLine("Read bytes {0}", readBytes);
 
         //for arguments
@@ -39,14 +41,12 @@ class klient
         }
         // Read the bytes from the file
         byte[] imageBytes = File.ReadAllBytes(filePath);
-        string base64String = Convert.ToBase64String(imageBytes);
         try
         {
             Int32 port = 13001;
             TcpClient client = new TcpClient("127.0.0.1", port);
             NetworkStream stream = client.GetStream();
-            stream.Write(ImageBytes, 0, ImageBytes.Length);
-            Console.WriteLine("Sent: {0}", base64String);
+            stream.Write(copiedBytes, 0, copiedBytes.Length);
 /*
             // String to store the response ASCII representation.
             String responseData = String.Empty;
@@ -76,16 +76,24 @@ class klient
     static void writeToFile(Exception ex) {
         DateTime timestamp = DateTime.Now;
         string filePath = "exception_log";
-        filePath += timestamp.ToString("yyyy-MM-dd HH:mm:ss");
         filePath += ".txt";
-        using (StreamWriter writer = File.CreateText(filePath))
+        if (File.Exists(filePath))
         {
-            // Write the exception message to the file
-            writer.WriteLine("Exception occurred at: " + timestamp);
-            writer.WriteLine("Exception message: " + ex.Message);
-            writer.WriteLine("Stack trace: " + ex.StackTrace);
+            using (StreamWriter writer = new StreamWriter(filePath, true))
+            {
+                writer.WriteLine("Exception occurred at: " + timestamp);
+                writer.WriteLine("Exception message: " + ex.Message);
+                writer.WriteLine("Stack trace: " + ex.StackTrace);
+            }
         }
-
-        Console.WriteLine("Exception message written to: " + filePath);
+        else {
+            using (StreamWriter writer = File.CreateText(filePath))
+            {
+                // Write the exception message to the file
+                writer.WriteLine("Exception occurred at: " + timestamp);
+                writer.WriteLine("Exception message: " + ex.Message);
+                writer.WriteLine("Stack trace: " + ex.StackTrace);
+            }
+        }
     }
 }

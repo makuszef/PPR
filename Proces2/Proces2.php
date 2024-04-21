@@ -1,7 +1,23 @@
 #!/usr/bin/php
 
 <?php
+	function getImageNameFromBytes($imageBytes) {
+		// Write the image bytes to a temporary file
+		$tempFilePath = tempnam(sys_get_temp_dir(), 'image');
+		file_put_contents($tempFilePath, $imageBytes);
+
+		// Read Exif data from the temporary file
+		$exifData = exif_read_data($tempFilePath);
+
+		// Check if Exif data was read successfully and contains the image name tag
+		if ($exifData !== false && isset($exifData['ImageDescription'])) {
+			return $exifData['ImageDescription'];
+		} else {
+			return null;
+		}
+	}
 	try {
+
 		//throw new Exception("This is an example exception message.");
 		# zmienne predefiniowane -------------------------------------------
 		$host = "127.0.0.1";
@@ -36,15 +52,20 @@
 
 		// Read image data from the client
 		$image_data = '';
-		echo "Blokada";
 		while ($chunk = socket_read($client_socket, 1024)) {
 			$image_data .= $chunk;
 		}
-		echo "Wyjscie";
 		// Process the image data (here you can save it to a file, perform image processing, etc.)
 		// For demonstration, let's just echo the size of the received image
 		$image_size = strlen($image_data);
 		echo "Received image size: $image_size bytes\n";
+		$imageName = getImageNameFromBytes($image_data);
+		echo $imageName;
+		if ($imageName !== null) {
+			echo "Image name: " . $imageName;
+		} else {
+			echo "Image name not found.";
+		}
 		$imageBase64 = base64_encode($image_data);
 
 		socket_close($client_socket);
@@ -83,6 +104,12 @@
 		// Execute the request and get the response
 		$response = curl_exec($ch);
 
+		//Save to logs
+		$currentDate = date('Y-m-d H:i:s');
+		$filePath = "images_log" . ".txt";
+		$exceptionMessage = "Image send at: " . $currentDate . PHP_EOL;
+		$exceptionMessage .= "Image name: " . $ex->getMessage() . PHP_EOL;
+		file_put_contents($filePath, $exceptionMessage, FILE_APPEND);
 		// Check for errors
 		if($response === false) {
 			echo 'Error: ' . curl_error($ch);
@@ -106,11 +133,11 @@
 	}
 	catch (Exception $ex) {
 		$currentDate = date('Y-m-d H:i:s');
-		$filePath = "exception_log_" . $currentDate;
+		$filePath = "exception_log" . ".txt";
 		$exceptionMessage = "Exception occurred at: " . $currentDate . PHP_EOL;
 		$exceptionMessage .= "Exception message: " . $ex->getMessage() . PHP_EOL;
 		$exceptionMessage .= "Stack trace: " . $ex->getTraceAsString() . PHP_EOL;
-		file_put_contents($filePath, $exceptionMessage);
+		file_put_contents($filePath, $exceptionMessage, FILE_APPEND);
 		echo "Exception message written to: " . $filePath;
 	}
 ?>

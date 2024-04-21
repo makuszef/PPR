@@ -32,7 +32,6 @@ try:
 except Exception as ex:
     dateTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S");
     file_path = "exception_log"
-    file_path += dateTime
     file_path += ".txt"
     # Format the exception message
     exception_message = f"Exception occurred at: {dateTime}\n"
@@ -40,5 +39,5 @@ except Exception as ex:
     exception_message += f"Stack trace:\n{traceback.format_exc()}"
 
     # Write the exception message to the file
-    with open(file_path, "w") as file:
+    with open(file_path, "a") as file:
         file.write(exception_message)
