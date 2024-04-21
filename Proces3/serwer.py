@@ -1,17 +1,12 @@
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 import base64
+import datetime
+import traceback
 from PIL import Image
 # Restrict to a particular path.
 class RequestHandler(SimpleXMLRPCRequestHandler):
     rpc_paths = ('/RPC2',)
-
-# Create server
-server = SimpleXMLRPCServer(("localhost", 8000),
-                            requestHandler=RequestHandler, logRequests=True)
-server.register_introspection_functions()
-
-# Define a function to be called remotely
 def add(x, y):
     return x + y
 def handleImage(image):
@@ -22,10 +17,28 @@ def handleImage(image):
     im = Image.open(r"decoded_image.jpg")
     im.save(r"decoded_image.png")
     return "image"
-# Register the function with a different name
-server.register_function(add, 'add_numbers')
-server.register_function(handleImage, 'handleImage')
 
-# Run the server's main loop
-print("XML-RPC server is running on localhost:8000...")
-server.serve_forever()
+try:
+    raise Exception("This is an example exception message.")
+    server = SimpleXMLRPCServer(("localhost", 8000),requestHandler=RequestHandler, logRequests=True)
+    server.register_introspection_functions()
+
+    server.register_function(add, 'add_numbers')
+    server.register_function(handleImage, 'handleImage')
+
+    # Run the server's main loop
+    print("XML-RPC server is running on localhost:8000...")
+    server.serve_forever()
+except Exception as ex:
+    dateTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S");
+    file_path = "exception_log"
+    file_path += dateTime
+    file_path += ".txt"
+    # Format the exception message
+    exception_message = f"Exception occurred at: {dateTime}\n"
+    exception_message += f"Exception message: {str(ex)}\n"
+    exception_message += f"Stack trace:\n{traceback.format_exc()}"
+
+    # Write the exception message to the file
+    with open(file_path, "w") as file:
+        file.write(exception_message)

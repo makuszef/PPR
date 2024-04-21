@@ -1,0 +1,4 @@
+Exception occurred at: 4/21/2024 1:33:48 PM
+Exception message: Connection refused
+Stack trace:   at System.Net.Sockets.TcpClient..ctor (System.String hostname, System.Int32 port) [0x00085] in <a85c1a570f9a4f9f9c3d2cfa5504e34f>:0 
+  at klient.Main (System.String[] args) [0x000af] in <93a995b23cae478e8e96f3e17ecc00cc>:0 
