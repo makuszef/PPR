@@ -1,24 +1,36 @@
 #!/usr/bin/php
 
 <?php
-	function getImageNameFromBytes($imageBytes) {
-		// Write the image bytes to a temporary file
-		$tempFilePath = tempnam(sys_get_temp_dir(), 'image');
-		file_put_contents($tempFilePath, $imageBytes);
-
-		// Read Exif data from the temporary file
-		$exifData = exif_read_data($tempFilePath);
-
-		// Check if Exif data was read successfully and contains the image name tag
-		if ($exifData !== false && isset($exifData['ImageDescription'])) {
-			return $exifData['ImageDescription'];
-		} else {
-			return null;
-		}
+	function saveToFile($fileName) {
+		$tempFilePath = "historia.txt";
+		$currentDate = date('Y-m-d H:i:s');
+		$Message = "Filename: " . $fileName . PHP_EOL;
+		$Message .= "Date: " . $currentDate . PHP_EOL;
+		file_put_contents($tempFilePath, $Message, FILE_APPEND);
 	}
-	try {
-
-		//throw new Exception("This is an example exception message.");
+	function getMessUdp() {
+		//GET UDP data
+		$UDPserverIP = "127.0.0.1"; // Replace with your server's IP address
+		$UDPserverPort = 14001;      // Replace with your desired port number
+		$UDPsocket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+		if (!$UDPsocket) {
+			echo "Error: Unable to create socket\n";
+			exit;
+		}
+		if (!socket_bind($UDPsocket, $UDPserverIP, $UDPserverPort)) {
+			echo "Error: Unable to bind socket to $UDPserverIP:$UDPserverPort\n";
+			exit;
+		}
+		echo "Server listening on $UDPserverIP:$UDPserverPort\n";
+		$clientIP = "";
+		$clientPort = 0;
+		$data = "";
+		socket_recvfrom($UDPsocket, $data, 1024, 0, $clientIP, $clientPort);
+		echo "Received from $clientIP:$clientPort: $data\n";
+		saveToFile($data);
+		socket_close($UDPsocket);
+	}
+	function getMessTCP() {
 		# zmienne predefiniowane -------------------------------------------
 		$host = "127.0.0.1";
 		$port = 13001;
@@ -59,19 +71,19 @@
 		// For demonstration, let's just echo the size of the received image
 		$image_size = strlen($image_data);
 		echo "Received image size: $image_size bytes\n";
-		$imageName = getImageNameFromBytes($image_data);
-		echo $imageName;
-		if ($imageName !== null) {
-			echo "Image name: " . $imageName;
-		} else {
-			echo "Image name not found.";
-		}
+
 		$imageBase64 = base64_encode($image_data);
 
 		socket_close($client_socket);
 		// Close the server socket
 		socket_close($socket);
+		return $imageBase64;
+	}
+	try {
 
+		//throw new Exception("This is an example exception message.");
+		$imageBase64 = getMessTCP();
+		getMessUdp();
 
 		//wyslij do 3 procesu
 		// Include the XML-RPC client library
@@ -103,21 +115,11 @@
 
 		// Execute the request and get the response
 		$response = curl_exec($ch);
-
-		//Save to logs
-		$currentDate = date('Y-m-d H:i:s');
-		$filePath = "images_log" . ".txt";
-		$exceptionMessage = "Image send at: " . $currentDate . PHP_EOL;
-		$exceptionMessage .= "Image name: " . $ex->getMessage() . PHP_EOL;
-		file_put_contents($filePath, $exceptionMessage, FILE_APPEND);
-		// Check for errors
 		if($response === false) {
 			echo 'Error: ' . curl_error($ch);
 		} else {
-
 			// Decode the XML-RPC response
 			$decoded_response = xmlrpc_decode($response);
-
 			// Check for errors in decoding
 			if ($decoded_response === null && xmlrpc_error()) {
 				echo 'Error decoding response: ' . xmlrpc_error_string();
@@ -127,7 +129,6 @@
 				var_dump($decoded_response);
 			}
 		}
-
 		// Close the cURL session
 		curl_close($ch);
 	}

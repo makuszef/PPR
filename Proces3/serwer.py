@@ -14,12 +14,14 @@ def handleImage(image):
     image_path = "decoded_image.jpg"
     with open(image_path, "wb") as image_file:
         image_file.write(image_data)
-    im = Image.open(r"decoded_image.jpg")
-    im.save(r"decoded_image.png")
+    #im = Image.open(r"decoded_image.jpg")
+    #im.save(r"decoded_image.png")
+    png_image = Image.open(BytesIO(image_data))
+    png_image.convert("RGB").save(jpeg_image_path, "JPEG")
     return "image"
 
 try:
-    raise Exception("This is an example exception message.")
+    #raise Exception("This is an example exception message.")
     server = SimpleXMLRPCServer(("localhost", 8000),requestHandler=RequestHandler, logRequests=True)
     server.register_introspection_functions()
 

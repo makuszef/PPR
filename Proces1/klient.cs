@@ -8,6 +8,10 @@ class klient
 {
     public static void Main(string[] args)
     {
+        string imageName = "Nazwa.jpg";
+        string serverIP = "127.0.0.1";
+        Int32 port = 13001;
+        Int32 portUDP = 14001;
         int maxImageSize = 1024^3;
         //czytaj plik
         if(args.Length == 0) {
@@ -43,19 +47,9 @@ class klient
         byte[] imageBytes = File.ReadAllBytes(filePath);
         try
         {
-            Int32 port = 13001;
-            TcpClient client = new TcpClient("127.0.0.1", port);
+            TcpClient client = new TcpClient(serverIP, port);
             NetworkStream stream = client.GetStream();
             stream.Write(copiedBytes, 0, copiedBytes.Length);
-/*
-            // String to store the response ASCII representation.
-            String responseData = String.Empty;
-
-            // Read the first batch of the TcpServer response bytes.
-            Int32 bytes = stream.Read(data, 0, data.Length);
-            responseData = Encoding.ASCII.GetString(data, 0, bytes);
-            Console.WriteLine("Received: {0}", responseData);
-*/
             // Close everything.
             stream.Close();
             client.Close();
@@ -69,6 +63,19 @@ class klient
             Console.WriteLine("SocketException: {0}", e);
             writeToFile(e);
         }
+        using (UdpClient client = new UdpClient())
+        {
+            try
+            {
+                byte[] data = Encoding.UTF8.GetBytes(imageName);
+                // Send the message to the server
+                client.Send(data, data.Length, serverIP, portUDP);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: " + e.Message);
+            }
+        }
 
         Console.WriteLine("\n Press Enter to continue...");
         Console.Read();
@@ -77,22 +84,18 @@ class klient
         DateTime timestamp = DateTime.Now;
         string filePath = "exception_log";
         filePath += ".txt";
+        string Message = "\nException occurred at:" + timestamp + "\nException message: " + ex.Message + "\nStack trace: " + ex.StackTrace;
         if (File.Exists(filePath))
         {
             using (StreamWriter writer = new StreamWriter(filePath, true))
             {
-                writer.WriteLine("Exception occurred at: " + timestamp);
-                writer.WriteLine("Exception message: " + ex.Message);
-                writer.WriteLine("Stack trace: " + ex.StackTrace);
+                writer.WriteLine(Message);
             }
         }
         else {
             using (StreamWriter writer = File.CreateText(filePath))
             {
-                // Write the exception message to the file
-                writer.WriteLine("Exception occurred at: " + timestamp);
-                writer.WriteLine("Exception message: " + ex.Message);
-                writer.WriteLine("Stack trace: " + ex.StackTrace);
+                writer.WriteLine(Message);
             }
         }
     }
