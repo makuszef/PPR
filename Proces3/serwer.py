@@ -3,21 +3,20 @@ from xmlrpc.server import SimpleXMLRPCRequestHandler
 import base64
 import datetime
 import traceback
+import io
 from PIL import Image
 # Restrict to a particular path.
 class RequestHandler(SimpleXMLRPCRequestHandler):
     rpc_paths = ('/RPC2',)
 def add(x, y):
     return x + y
-def handleImage(image):
+def handleImage(image, PngImageName):
     image_data = base64.b64decode(image)
-    image_path = "decoded_image.jpg"
-    with open(image_path, "wb") as image_file:
-        image_file.write(image_data)
+    image_path = PngImageName
     #im = Image.open(r"decoded_image.jpg")
     #im.save(r"decoded_image.png")
-    png_image = Image.open(BytesIO(image_data))
-    png_image.convert("RGB").save(jpeg_image_path, "JPEG")
+    png_image = Image.open(io.BytesIO(image_data))
+    png_image.convert("RGB").save(image_path, "PNG")
     return "image"
 
 try:

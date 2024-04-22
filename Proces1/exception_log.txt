@@ -1,12 +1,10 @@
-Exception occurred at: 4/21/2024 2:28:32 PM
+
+Exception occurred at:4/22/2024 7:22:13 AM
 Exception message: Connection refused
 Stack trace:   at System.Net.Sockets.TcpClient..ctor (System.String hostname, System.Int32 port) [0x00085] in <a85c1a570f9a4f9f9c3d2cfa5504e34f>:0 
-  at klient.Main (System.String[] args) [0x000af] in <1ba82f384e5d43c785992291848f5e13>:0 
-Exception occurred at: 4/21/2024 2:31:10 PM
+  at klient.Main (System.String[] args) [0x000bd] in <da1253d1997e43bf9037c3dcc60f67a4>:0 
+
+Exception occurred at:4/22/2024 7:24:36 AM
 Exception message: Connection refused
 Stack trace:   at System.Net.Sockets.TcpClient..ctor (System.String hostname, System.Int32 port) [0x00085] in <a85c1a570f9a4f9f9c3d2cfa5504e34f>:0 
-  at klient.Main (System.String[] args) [0x000af] in <59a7dd990d4d4120890eecc9f6693d05>:0 
-Exception occurred at: 4/21/2024 2:31:17 PM
-Exception message: Connection refused
-Stack trace:   at System.Net.Sockets.TcpClient..ctor (System.String hostname, System.Int32 port) [0x00085] in <a85c1a570f9a4f9f9c3d2cfa5504e34f>:0 
-  at klient.Main (System.String[] args) [0x000af] in <59a7dd990d4d4120890eecc9f6693d05>:0 
+  at klient.Main (System.String[] args) [0x000bd] in <da1253d1997e43bf9037c3dcc60f67a4>:0 

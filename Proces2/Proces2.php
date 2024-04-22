@@ -29,6 +29,7 @@
 		echo "Received from $clientIP:$clientPort: $data\n";
 		saveToFile($data);
 		socket_close($UDPsocket);
+		return $data;
 	}
 	function getMessTCP() {
 		# zmienne predefiniowane -------------------------------------------
@@ -80,10 +81,8 @@
 		return $imageBase64;
 	}
 	try {
-
-		//throw new Exception("This is an example exception message.");
 		$imageBase64 = getMessTCP();
-		getMessUdp();
+		$PngImageName = getMessUdp();
 
 		//wyslij do 3 procesu
 		// Include the XML-RPC client library
@@ -94,7 +93,8 @@
 		$method_name = 'handleImage'; // Name of the method you want to call
 
 		// Parameters for the method (if any)
-		$parameters = array($imageBase64);
+		echo "Nazwa zdjecia $PngImageName";
+		$parameters = array($imageBase64, $PngImageName);
 
 		// Prepare the XML-RPC request body
 		$request_body = xmlrpc_encode_request($method_name, $parameters);
@@ -112,7 +112,7 @@
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $request_body);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
+		echo "Returned";
 		// Execute the request and get the response
 		$response = curl_exec($ch);
 		if($response === false) {
