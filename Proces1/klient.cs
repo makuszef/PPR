@@ -23,7 +23,7 @@ class klient
             string filePath = args[0].ToString();
             imageName = filePath.Split(".")[0];
             if (args[0].ToString() == "E") {
-                throw new Exception("This is an example exception.");
+                throw new Exception("Exeption.");
             }
             //read input
             /*
