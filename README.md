@@ -23,6 +23,9 @@ This document describes the communication workflow between three processes teste
    - **Action**: Receives the JPG image via XML-RPC, converts it to PNG format, and saves the converted image to disk.
 
 # Sequence of Invoking Processes
+
+Follow these steps to invoke the processes in the correct order:
+
 1. **Start Process 1**
    - Compile the C# client application.
      ```bash
@@ -36,5 +39,12 @@ This document describes the communication workflow between three processes teste
 2. **Start Process 2**
    - Execute the PHP script that handles communication for Process 2.
      ```bash
-     php klient.php
+     php klient2.php
      ```
+
+3. **Start Process 3**
+   - Run the Python script that processes the image.
+     ```bash
+     python3 serwer.py
+     ```
+
