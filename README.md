@@ -21,3 +21,20 @@ This document describes the communication workflow between three processes teste
 3. **Process 3: Receive, Convert, and Save Image**
    - **Input**: Image received from Process 2.
    - **Action**: Receives the JPG image via XML-RPC, converts it to PNG format, and saves the converted image to disk.
+
+# Sequence of Invoking Processes
+1. **Start Process 1**
+   - Compile the C# client application.
+     ```bash
+     mcs klient.cs
+     ```
+   - Run the compiled executable, specifying the file path to the image.
+     ```bash
+     ./klient.exe file_path_to_image
+     ```
+
+2. **Start Process 2**
+   - Execute the PHP script that handles communication for Process 2.
+     ```bash
+     php klient.php
+     ```
