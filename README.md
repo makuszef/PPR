@@ -47,6 +47,6 @@ Follow these steps to invoke the processes in the correct order:
      ```bash
      python3 serwer.py
      ```
-[![Watch this video on YouTube](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://youtu.be/1SP2MZhuVkE)
+[![Watch this video on YouTube](https://img.youtube.com/vi/1SP2MZhuVkE/0.jpg)](https://youtu.be/1SP2MZhuVkE)
 
 
